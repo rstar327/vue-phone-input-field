@@ -1,6 +1,6 @@
 {
-  "name": "@rstar327/vue-phone-input",
-  "version": "1.0.0",
+  "name": "vue-smart-phone-input",
+  "version": "1.0.2",
   "description": "Vue 3 international phone number input with country flags, auto-formatting, validation, and country auto-detection",
   "type": "module",
   "main": "./dist/vue-phone-input.cjs",

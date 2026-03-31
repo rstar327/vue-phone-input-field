@@ -1,4 +1,4 @@
-# @rstar327/vue-phone-input
+# vue-smart-phone-input
 
 A Vue 3 international phone number input component with country flags, auto-formatting, validation, and IP-based country detection.
 
@@ -17,7 +17,7 @@ A Vue 3 international phone number input component with country flags, auto-form
 ## Install
 
 ```bash
-npm install @rstar327/vue-phone-input
+npm install vue-smart-phone-input
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ npm install @rstar327/vue-phone-input
 
 <script setup>
 import { ref } from 'vue'
-import { PhoneInput } from '@rstar327/vue-phone-input'
+import { PhoneInput } from 'vue-smart-phone-input'
 
 const phone = ref('')
 
@@ -82,7 +82,7 @@ import {
   formatPhoneNumber,   // Format digits with a pattern
   detectCountryFromIP, // Detect country from IP (async)
   searchCountries,     // Search countries by name/code
-} from '@rstar327/vue-phone-input'
+} from 'vue-smart-phone-input'
 ```
 
 ## License
