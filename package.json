@@ -1,0 +1,55 @@
+{
+  "name": "@rstar327/vue-phone-input",
+  "version": "1.0.0",
+  "description": "Vue 3 international phone number input with country flags, auto-formatting, validation, and country auto-detection",
+  "type": "module",
+  "main": "./dist/vue-phone-input.cjs",
+  "module": "./dist/vue-phone-input.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-phone-input.mjs",
+      "require": "./dist/vue-phone-input.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outDir dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "phone",
+    "phone-input",
+    "telephone",
+    "international",
+    "country-code",
+    "phone-number",
+    "input",
+    "component",
+    "validation",
+    "flags"
+  ],
+  "author": "rstar327",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rstar327/vue-phone-input"
+  },
+  "homepage": "https://github.com/rstar327/vue-phone-input#readme",
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.5",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vue": "^3.5.31",
+    "vue-tsc": "^3.2.6"
+  }
+}
