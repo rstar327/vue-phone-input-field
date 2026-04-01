@@ -41,9 +41,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rstar327/vue-phone-input"
+    "url": "https://github.com/rstar327/vue-phone-input-field"
   },
-  "homepage": "https://github.com/rstar327/vue-phone-input#readme",
+  "homepage": "https://github.com/rstar327/vue-phone-input-field#readme",
   "peerDependencies": {
     "vue": "^3.3.0"
   },
