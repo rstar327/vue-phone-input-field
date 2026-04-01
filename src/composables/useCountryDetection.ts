@@ -28,3 +28,38 @@ export function searchCountries(query: string): Country[] {
       c.iso2.includes(q),
   );
 }
+
+export function getCountryOptions(params: {
+  countries?: Country[];
+  preferredCountries?: string[];
+  addInternationalOption?: boolean;
+  labels?: Record<string, string>;
+}): Array<{ value: string; label: string; divider?: boolean }> {
+  const list = params.countries ?? countries;
+  const preferred = (params.preferredCountries ?? [])
+    .map((iso2) => findCountryByIso2(iso2))
+    .filter(Boolean) as Country[];
+
+  const options: Array<{ value: string; label: string; divider?: boolean }> = [];
+
+  if (params.addInternationalOption !== false) {
+    options.push({ value: "", label: params.labels?.["ZZ"] ?? "International" });
+  }
+
+  if (preferred.length > 0) {
+    for (const c of preferred) {
+      const label = params.labels?.[c.iso2.toUpperCase()] ?? c.name;
+      options.push({ value: c.iso2, label: `${c.flag} ${label}` });
+    }
+    options.push({ value: "", label: "", divider: true });
+  }
+
+  const preferredSet = new Set((params.preferredCountries ?? []).map((s) => s.toLowerCase()));
+  for (const c of list) {
+    if (preferredSet.has(c.iso2)) continue;
+    const label = params.labels?.[c.iso2.toUpperCase()] ?? c.name;
+    options.push({ value: c.iso2, label: `${c.flag} ${label}` });
+  }
+
+  return options;
+}

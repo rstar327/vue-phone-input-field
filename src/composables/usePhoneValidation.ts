@@ -1,68 +1,94 @@
+import {
+  parsePhoneNumber,
+  AsYouType,
+  isValidPhoneNumber as libIsValid,
+  isPossiblePhoneNumber as libIsPossible,
+  getCountryCallingCode,
+  type CountryCode,
+} from "libphonenumber-js";
 import type { Country } from "../data/countries";
 
 export interface PhoneValidationResult {
   valid: boolean;
+  possible: boolean;
   formatted: string;
   e164: string;
   nationalNumber: string;
   country: Country | null;
 }
 
-const MIN_PHONE_LENGTH = 4;
-const MAX_PHONE_LENGTH = 15;
+export function formatAsYouType(value: string, countryCode?: string): string {
+  if (!value) return "";
+  const formatter = new AsYouType(countryCode as CountryCode | undefined);
+  return formatter.input(value);
+}
 
-export function formatPhoneNumber(
-  digits: string,
-  format?: string,
-): string {
-  if (!format || !digits) return digits;
-  let result = "";
-  let digitIndex = 0;
-  for (const ch of format) {
-    if (digitIndex >= digits.length) break;
-    if (ch === ".") {
-      result += digits[digitIndex++];
-    } else {
-      result += ch;
-    }
+export function formatNational(value: string, countryCode?: string): string {
+  if (!value || !countryCode) return value;
+  try {
+    const phone = parsePhoneNumber(value, countryCode as CountryCode);
+    return phone?.formatNational() ?? value;
+  } catch {
+    return value;
   }
-  // Append remaining digits
-  if (digitIndex < digits.length) {
-    result += digits.slice(digitIndex);
+}
+
+export function formatInternational(value: string, countryCode?: string): string {
+  if (!value) return value;
+  try {
+    const phone = parsePhoneNumber(value, countryCode as CountryCode);
+    return phone?.formatInternational() ?? value;
+  } catch {
+    return value;
   }
-  return result;
+}
+
+export function isValidPhoneNumber(value: string, countryCode?: string): boolean {
+  if (!value) return false;
+  try {
+    return libIsValid(value, countryCode as CountryCode | undefined);
+  } catch {
+    return false;
+  }
+}
+
+export function isPossiblePhoneNumber(value: string, countryCode?: string): boolean {
+  if (!value) return false;
+  try {
+    return libIsPossible(value, countryCode as CountryCode | undefined);
+  } catch {
+    return false;
+  }
+}
+
+export function getCallingCode(countryCode: string): string {
+  try {
+    return getCountryCallingCode(countryCode as CountryCode);
+  } catch {
+    return "";
+  }
+}
+
+export function parseE164(value: string): { countryCode?: string; nationalNumber: string; e164: string } {
+  if (!value) return { nationalNumber: "", e164: "" };
+  try {
+    const phone = parsePhoneNumber(value);
+    return {
+      countryCode: phone?.country,
+      nationalNumber: phone?.nationalNumber ?? "",
+      e164: phone?.format("E.164") ?? value,
+    };
+  } catch {
+    return { nationalNumber: value.replace(/\D/g, ""), e164: value };
+  }
 }
 
 export function stripNonDigits(value: string): string {
-  return value.replace(/\D/g, "");
+  return value.replace(/[^\d+]/g, "");
 }
 
-export function validatePhone(
-  phoneNumber: string,
-  country: Country | null,
-): PhoneValidationResult {
-  const digits = stripNonDigits(phoneNumber);
-  const dialCode = country?.dialCode ?? "";
-  const nationalNumber = dialCode && digits.startsWith(dialCode)
-    ? digits.slice(dialCode.length)
-    : digits;
-
-  const e164 = dialCode ? `+${dialCode}${nationalNumber}` : `+${digits}`;
-  const formatted = country?.format
-    ? formatPhoneNumber(nationalNumber, country.format)
-    : nationalNumber;
-
-  const totalDigits = dialCode.length + nationalNumber.length;
-  const valid =
-    nationalNumber.length >= MIN_PHONE_LENGTH &&
-    totalDigits <= MAX_PHONE_LENGTH &&
-    /^\d+$/.test(nationalNumber);
-
-  return {
-    valid,
-    formatted,
-    e164,
-    nationalNumber,
-    country,
-  };
+export function parsePhoneCharacter(char: string): string | undefined {
+  if (char === "+") return "+";
+  if (/\d/.test(char)) return char;
+  return undefined;
 }
